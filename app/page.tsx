@@ -1,11 +1,7 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-import Button from '@mui/material/Button';
+import Chatbot from "@/Components/chatbot";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-       <Button variant="outlined">Outlined</Button>
-    </main>
+      <Chatbot />
   );
 }
