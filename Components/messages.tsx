@@ -28,13 +28,19 @@ const Messages: React.FC = () => {
       const userQuestion: messageType = { role: 'user', content: prompt };
       setMessages((prevMessages) => [...prevMessages, userQuestion]);
       setPrompt('');
-      const response = await axios.post(process.env.NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT, {
-        question: prompt,
-      });
-
-      setIsLoading(false);
-      const reply: messageType = { role: 'AI', content: response.data.result };
-      setMessages((prevMessages) => [...prevMessages, reply]);
+      const endpoint = process.env.NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT;
+      if (!endpoint) {
+        console.error("Environment variable NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT is not defined");
+        return;
+      }
+      try {
+        const response = await axios.post(endpoint, { question: prompt });
+        setIsLoading(false);
+        const reply: messageType = { role: 'AI', content: response.data.result };
+        setMessages((prevMessages) => [...prevMessages, reply]);
+      } catch (error) {
+        console.error("Error fetching response:", error);
+      }
     }
   };
 
