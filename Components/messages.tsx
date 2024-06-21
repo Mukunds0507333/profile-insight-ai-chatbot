@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { TextField, Box, Paper, Button, Typography } from '@mui/material';
+import { TextField, Box, Paper, Button, Typography, CircularProgress  } from '@mui/material';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import ThemeToggle from './themeToggle';
 import axios from 'axios';
@@ -14,6 +14,7 @@ const Messages: React.FC = () => {
   const chatbotMessagesRef = useRef<HTMLDivElement | null>(null);
   const [prompt, setPrompt] = useState<string>('');
   const [messages, setMessages] = useState<messageType[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (chatbotMessagesRef.current) {
@@ -23,17 +24,17 @@ const Messages: React.FC = () => {
 
   const handleSendMessage = async () => {
     if (prompt?.length > 0) {
+      setIsLoading(true);
       const userQuestion: messageType = { role: 'user', content: prompt };
       setMessages((prevMessages) => [...prevMessages, userQuestion]);
       setPrompt('');
-      const response = await axios.post('https://i55xx7w3lrjdmamc4ut4bzgcjm0yulke.lambda-url.ap-south-1.on.aws/', {
+      const response = await axios.post(process.env.NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT, {
         question: prompt,
       });
-      console.log(response);
 
+      setIsLoading(false);
       const reply: messageType = { role: 'AI', content: response.data.result };
       setMessages((prevMessages) => [...prevMessages, reply]);
-      console.log(messages);
     }
   };
 
@@ -64,12 +65,11 @@ const Messages: React.FC = () => {
         >
           {messages?.length > 0 ? (
             messages.map((message: messageType, index: number) => {
-              console.log('conditional ', message);
               return message.role === 'user' ? (
                 <Paper
                   key={index}
                   className='userMessage'
-                  style={{ padding: 20, alignSelf: 'flex-end', marginTop: 5, marginBottom: 5 }}
+                  style={{ padding: 20, alignSelf: 'flex-end', marginTop: 7, marginBottom: 7 }}
                   elevation={6}
                 >
                   {message.content.split('\n').map((line: string, i: number) => (
@@ -80,7 +80,7 @@ const Messages: React.FC = () => {
                 <Paper
                   key={index}
                   className='botMessage'
-                  style={{ padding: 20, alignSelf: 'flex-start', marginTop: 5, marginBottom: 5 }}
+                  style={{ padding: 20, alignSelf: 'flex-start', marginTop: 7, marginBottom: 7 }}
                   elevation={10}
                 >
                   {message.content.split('\n').map((line: string, i: number) => (
@@ -139,11 +139,11 @@ const Messages: React.FC = () => {
             InputProps={{
               endAdornment: (
                 <Button
-                  style={{ paddingLeft: 1, width: 1, marginLeft: -12, marginRight: 8, backgroundColor: '#1847a0' }}
+                  style={{ paddingLeft: 1, width: 1, marginLeft: -12, marginRight: 8 }}
                   variant='contained'
-                  color='primary'
                   onClick={handleSendMessage}
-                  endIcon={<SendRoundedIcon />}
+                  disabled={isLoading}
+                  endIcon={isLoading ? <CircularProgress size={24} color="inherit" /> : <SendRoundedIcon />}
                 />
               ),
             }}
