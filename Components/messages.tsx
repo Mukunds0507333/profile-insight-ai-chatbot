@@ -34,9 +34,12 @@ const Messages: React.FC = () => {
         return;
       }
       try {
-        const response = await axios.post(endpoint, { question: prompt });
+        console.log(messages);
+        console.log(JSON.stringify(messages));
+        const response = await axios.post(endpoint, { message_list: [...messages, userQuestion] });
         setIsLoading(false);
-        const reply: messageType = { role: 'AI', content: response.data.result };
+        console.log('response ', response);
+        const reply: messageType = { role: 'AI', content: response.data };
         setMessages((prevMessages) => [...prevMessages, reply]);
       } catch (error) {
         console.error("Error fetching response:", error);
