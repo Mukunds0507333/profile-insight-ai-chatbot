@@ -1,4 +1,3 @@
-// Components/chatList.tsx
 import { Paper, Chip, Box, Button } from '@mui/material';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import axios from 'axios';

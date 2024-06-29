@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.NEXT_PUBLIC_MONGO_URI;
+const MONGODB_URI: string | undefined = process.env.NEXT_PUBLIC_MONGO_URI;
 
 const connection: { connectionState?: number} = {};
 
@@ -10,6 +10,8 @@ async function connectToDatabase() {
   }
 
   try{
+    if(!MONGODB_URI)
+      throw new Error("ENV not set")
     console.log("URI ", MONGODB_URI);
     const db = await mongoose.connect(MONGODB_URI);
     
