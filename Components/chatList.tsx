@@ -12,7 +12,7 @@ const ChatList: React.FC<MessagesProps> = ({ setMessages }) => {
 
   const retrieveMessages = async (index: number) => {
     try {
-      const response = await axios.get(`/api/chats/${index + 1}`);
+      const response = await axios.get(`/api/chats/${index + 1}`, { timeout: 30000 }); 
       console.log("response ", response.data.messages);
       setMessages(response.data.messages);
     } catch (error) {
