@@ -5,18 +5,24 @@ import SendRoundedIcon from '@mui/icons-material/SendRounded';
 import ThemeToggle from './themeToggle';
 import axios from 'axios';
 
-const Messages: React.FC = () => {
-  type messageType = {
-    role: string;
-    content: string;
-  };
+type messageType = {
+  role: string;
+  content: string;
+};
 
+type MessagesProps = {
+  messages: messageType[];
+  setMessages: React.Dispatch<React.SetStateAction<messageType[]>>;
+};
+
+const Messages: React.FC<MessagesProps> = ({messages, setMessages}) => {
+ 
   const chatbotMessagesRef = useRef<HTMLDivElement | null>(null);
   const [prompt, setPrompt] = useState<string>('');
-  const [messages, setMessages] = useState<messageType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log('useEffect ', messages);
     if (chatbotMessagesRef.current) {
       chatbotMessagesRef.current.scrollTop = chatbotMessagesRef.current.scrollHeight;
     }
@@ -30,7 +36,7 @@ const Messages: React.FC = () => {
       setPrompt('');
       const endpoint = process.env.NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT;
       if (!endpoint) {
-        console.error("Environment variable NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT is not defined");
+        console.error("NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT is not defined");
         return;
       }
       try {
@@ -74,14 +80,14 @@ const Messages: React.FC = () => {
         >
           {messages?.length > 0 ? (
             messages.map((message: messageType, index: number) => {
-              return message.role === 'user' ? (
+              return message?.role == 'user' ? (
                 <Paper
                   key={index}
                   className='userMessage'
                   style={{ padding: 20, alignSelf: 'flex-end', marginTop: 7, marginBottom: 7 }}
                   elevation={6}
                 >
-                  {message.content.split('\n').map((line: string, i: number) => (
+                  {message?.content?.split('\n').map((line: string, i: number) => (
                     <div key={i}>{line}</div>
                   ))}
                 </Paper>
@@ -92,7 +98,7 @@ const Messages: React.FC = () => {
                   style={{ padding: 20, alignSelf: 'flex-start', marginTop: 7, marginBottom: 7 }}
                   elevation={10}
                 >
-                  {message.content.split('\n').map((line: string, i: number) => (
+                  {message?.content?.split('\\n').map((line: string, i: number) => (
                     <div key={i} style={{ margin: 5 }}>
                       {line}
                     </div>
