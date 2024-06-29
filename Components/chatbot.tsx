@@ -6,8 +6,15 @@ import Messages from './messages';
 import ThemeToggle from './themeToggle';
 import MenuIcon from '@mui/icons-material/Menu';
 
+export type messageType = {
+    role: string;
+    content: string;
+  };
+
 const Chatbot: React.FC = () => {
+    
     const [showChatList, setShowChatList] = useState(false);
+    const [messages, setMessages] = useState<messageType[]>([]);
     const chatListRef = useRef<HTMLDivElement>(null);
     const toggleButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -60,7 +67,7 @@ const Chatbot: React.FC = () => {
                 style={{ height: "100%" }}
                 ref={chatListRef}
             >
-                <ChatList />
+                <ChatList setMessages = {setMessages}/>
             </Grid>
 
             <Grid item xs={12} md={10} style={{ height: "100%" }}>
@@ -82,7 +89,7 @@ const Chatbot: React.FC = () => {
                             <ThemeToggle />
                         </Box>
                     </Box>
-                    <Messages />
+                    <Messages messages={messages} setMessages={setMessages}/>
                 </Box>
             </Grid>
         </Grid>

@@ -14,11 +14,13 @@
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.18",
     "axios": "^1.7.2",
+    "mongoose": "^8.4.3",
     "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@types/mongoose": "^5.11.97",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
