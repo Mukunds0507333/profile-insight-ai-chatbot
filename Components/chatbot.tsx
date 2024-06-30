@@ -24,8 +24,6 @@ const Chatbot: React.FC = () => {
 
     const handleClickOutside = (event: MouseEvent) => {
         if (
-            chatListRef.current && 
-            !chatListRef.current.contains(event.target as Node) &&
             toggleButtonRef.current &&
             !toggleButtonRef.current.contains(event.target as Node)
         ) {

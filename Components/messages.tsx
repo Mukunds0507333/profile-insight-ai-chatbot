@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { TextField, Box, Paper, Button, Typography, CircularProgress  } from '@mui/material';
+import { TextField, Box, Paper, Button, Typography, CircularProgress, Skeleton } from '@mui/material';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
-import ThemeToggle from './themeToggle';
+import { useTheme } from '@/Context/themeContext';
 import axios from 'axios';
 
 type messageType = {
@@ -19,7 +19,7 @@ const Messages: React.FC<MessagesProps> = ({messages, setMessages}) => {
  
   const chatbotMessagesRef = useRef<HTMLDivElement | null>(null);
   const [prompt, setPrompt] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const {isLoading, toggleMessageLoading, theme} = useTheme();
 
   useEffect(() => {
     console.log('useEffect ', messages);
@@ -30,7 +30,7 @@ const Messages: React.FC<MessagesProps> = ({messages, setMessages}) => {
 
   const handleSendMessage = async () => {
     if (prompt?.length > 0) {
-      setIsLoading(true);
+      toggleMessageLoading();
       const userQuestion: messageType = { role: 'user', content: prompt };
       setMessages((prevMessages) => [...prevMessages, userQuestion]);
       setPrompt('');
@@ -40,13 +40,10 @@ const Messages: React.FC<MessagesProps> = ({messages, setMessages}) => {
         return;
       }
       try {
-        console.log(messages);
-        console.log(JSON.stringify(messages));
         const response = await axios.post(endpoint, { message_list: [...messages, userQuestion] });
-        setIsLoading(false);
-        console.log('response ', response);
         const reply: messageType = { role: 'AI', content: response.data };
         setMessages((prevMessages) => [...prevMessages, reply]);
+        toggleMessageLoading();
       } catch (error) {
         console.error("Error fetching response:", error);
       }
@@ -78,7 +75,10 @@ const Messages: React.FC<MessagesProps> = ({messages, setMessages}) => {
             width: '90%',
           }}
         >
-          {messages?.length > 0 ? (
+          {isLoading && messages?.length==0 ? (
+            <Skeleton animation='pulse' height={2000} width={4000} style={{alignSelf: 'flex-end'}} />
+          )
+          : messages?.length > 0 ? (
             messages.map((message: messageType, index: number) => {
               return message?.role == 'user' ? (
                 <Paper
@@ -158,7 +158,8 @@ const Messages: React.FC<MessagesProps> = ({messages, setMessages}) => {
                   variant='contained'
                   onClick={handleSendMessage}
                   disabled={isLoading}
-                  endIcon={isLoading ? <CircularProgress size={24} color="inherit" /> : <SendRoundedIcon />}
+                  endIcon={isLoading ? 
+                  <CircularProgress size={24} color={theme == 'light'? 'inherit':'secondary'} /> : <SendRoundedIcon />}
                 />
               ),
             }}

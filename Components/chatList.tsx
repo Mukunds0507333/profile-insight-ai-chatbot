@@ -1,3 +1,6 @@
+'use client'
+import { useTheme } from '@/Context/themeContext';
+import { useState } from 'react';
 import { Paper, Chip, Box, Button } from '@mui/material';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import axios from 'axios';
@@ -9,12 +12,17 @@ type MessagesProps = {
 
 const ChatList: React.FC<MessagesProps> = ({ setMessages }) => {
   const testList: string[] = ['Example Chat 1', 'Example Chat 2'];
+  const { isLoading, toggleMessageLoading } = useTheme();
+  const [selectedDemo, setSelectedDemo] = useState<number|null>(null);
 
   const retrieveMessages = async (index: number) => {
     try {
+      setSelectedDemo(index);
+      toggleMessageLoading();
       const response = await axios.get(`/api/chats/${index + 1}`, { timeout: 30000 }); 
       console.log("response ", response.data.messages);
       setMessages(response.data.messages);
+      toggleMessageLoading();
     } catch (error) {
       console.error('Error fetching messages:', error);
     }
@@ -54,7 +62,7 @@ const ChatList: React.FC<MessagesProps> = ({ setMessages }) => {
             testList.map((test, index) => (
               <Button
                 key={index}
-                variant='outlined'
+                variant={index == selectedDemo? 'contained' : 'outlined'}
                 style={{
                   padding: 5,
                   margin: 5,
@@ -85,3 +93,4 @@ const ChatList: React.FC<MessagesProps> = ({ setMessages }) => {
 };
 
 export default ChatList;
+

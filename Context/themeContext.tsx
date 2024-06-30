@@ -4,12 +4,15 @@ import React, { createContext, useState, useEffect, useContext, ReactNode } from
 interface ThemeContextType {
   theme: 'light' | 'dark';
   toggleTheme: () => void;
+  isLoading: boolean
+  toggleMessageLoading: ()=> void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const storedTheme = window.localStorage.getItem('theme') as 'light' | 'dark' | null;
@@ -32,8 +35,12 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     window.localStorage.setItem('theme', newTheme);
   };
 
+  const toggleMessageLoading = () => {
+    setIsLoading((isLoading)=>!isLoading);
+  }
+
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, isLoading, toggleMessageLoading }}>
       {children}
     </ThemeContext.Provider>
   );
