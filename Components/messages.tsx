@@ -201,7 +201,7 @@ const Messages: React.FC<MessagesProps> = ({
                 <Skeleton
                   animation="pulse"
                   height={200}
-                  width={400}
+                  width={300}
                   sx={{
                     backgroundColor:
                       theme === "dark"
@@ -269,7 +269,10 @@ const Messages: React.FC<MessagesProps> = ({
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleSendMessage();
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handleSendMessage();
+              }
             }}
             multiline
             maxRows={1}
@@ -299,10 +302,10 @@ const Messages: React.FC<MessagesProps> = ({
             }}
           />
           <Button
-            style={{ marginLeft: "10px", height: "56px" }}
+            style={{ marginLeft: "10px", height: "36px" }}
             variant="contained"
             onClick={handleSendMessage}
-            disabled={isLoading}
+            disabled={isLoading || prompt?.length < 1}
           >
             {isLoading ? (
               <CircularProgress
