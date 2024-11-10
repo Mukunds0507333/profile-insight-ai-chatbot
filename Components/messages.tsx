@@ -79,6 +79,18 @@ const Messages: React.FC<MessagesProps> = ({
     }
   };
 
+  useEffect(() => {
+    const endpoint = process.env.NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT;
+    const serverlessColdStartMitigator = async () => {
+      if (endpoint) {
+        await axios.post(endpoint, {
+          message_list: [{ role: "user", content: "user" }],
+        });
+      }
+    };
+    serverlessColdStartMitigator();
+  }, []);
+
   const parseLinks = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     return text.split("\n").map((line, i) => {
