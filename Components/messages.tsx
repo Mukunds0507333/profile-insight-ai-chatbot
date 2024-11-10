@@ -43,10 +43,12 @@ const Messages: React.FC<MessagesProps> = ({
       if (isAtBottom) {
         container.scrollTop = container.scrollHeight;
       } else {
-        const newMessageElement = container.lastElementChild as HTMLElement;
-        if (newMessageElement) {
-          const scrollOffset = newMessageElement.offsetHeight / 3;
-          container.scrollTop += scrollOffset;
+        if (!isExample) {
+          const newMessageElement = container.lastElementChild as HTMLElement;
+          if (newMessageElement) {
+            const scrollOffset = newMessageElement.offsetHeight / 3;
+            container.scrollTop += scrollOffset;
+          }
         }
       }
     }
