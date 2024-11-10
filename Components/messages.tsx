@@ -21,9 +21,14 @@ type messageType = {
 type MessagesProps = {
   messages: messageType[];
   setMessages: React.Dispatch<React.SetStateAction<messageType[]>>;
+  isExample: boolean;
 };
 
-const Messages: React.FC<MessagesProps> = ({ messages, setMessages }) => {
+const Messages: React.FC<MessagesProps> = ({
+  messages,
+  setMessages,
+  isExample,
+}) => {
   const chatbotMessagesRef = useRef<HTMLDivElement | null>(null);
   const [prompt, setPrompt] = useState<string>("");
   const { isLoading, toggleMessageLoading, theme } = useTheme();
@@ -80,19 +85,27 @@ const Messages: React.FC<MessagesProps> = ({ messages, setMessages }) => {
           style={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "space-around",
+            justifyContent: "space-evenly",
             height: "100%",
             width: "90%",
           }}
         >
-          {isLoading && messages?.length == 0 ? (
+          {isLoading && isExample && messages?.length == 0 ? (
             <Skeleton
               animation="pulse"
-              height={2000}
-              width={4000}
-              style={{
-                alignSelf: "flex-end",
-                animationDuration: "0.75s", // Adjust this value to make it faster
+              height={200}
+              width={400}
+              sx={{
+                backgroundColor:
+                  theme === "dark" ? "var(--secondary)" : "rgba(0, 0, 0, 0.11)",
+                "&::after": {
+                  background:
+                    theme === "dark"
+                      ? "var(--scrollbar-thumb)"
+                      : "rgba(0, 0, 0, 0.25)",
+                },
+                alignSelf: "flex-center",
+                animationDuration: "0.5s",
               }}
             />
           ) : messages?.length > 0 ? (
@@ -105,8 +118,8 @@ const Messages: React.FC<MessagesProps> = ({ messages, setMessages }) => {
                     style={{
                       padding: 20,
                       alignSelf: "flex-end",
-                      marginTop: 7,
-                      marginBottom: 7,
+                      marginTop: 10,
+                      marginBottom: 10,
                     }}
                     elevation={6}
                   >
@@ -123,8 +136,8 @@ const Messages: React.FC<MessagesProps> = ({ messages, setMessages }) => {
                     style={{
                       padding: 20,
                       alignSelf: "flex-start",
-                      marginTop: 7,
-                      marginBottom: 7,
+                      marginTop: 10,
+                      marginBottom: 10,
                     }}
                     elevation={10}
                   >
@@ -144,9 +157,18 @@ const Messages: React.FC<MessagesProps> = ({ messages, setMessages }) => {
                   height={200}
                   width={400}
                   sx={{
-                    // fontSize: "1rem",
+                    backgroundColor:
+                      theme === "dark"
+                        ? "var(--secondary)"
+                        : "rgba(0, 0, 0, 0.11)",
+                    "&::after": {
+                      background:
+                        theme === "dark"
+                          ? "var(--scrollbar-thumb)"
+                          : "rgba(0, 0, 0, 0.25)",
+                    },
                     alignSelf: "flex-start",
-                    animationDuration: "0.5s", // Adjust this value to make it faster
+                    animationDuration: "0.5s",
                   }}
                 />
               )}

@@ -1,27 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
 
 :root[data-theme="light"] {
-  --font-family: 'Inter', sans-serif;
+  --font-family: "Inter", sans-serif;
   --text: #071013;
   --background: #eef8fc;
   --primary: #3a84b6;
-  --secondary: #88d9f4;
+  --secondary: #90a1e4;
   --accent: #3ecbfa;
   --outline: #1847a0;
-  --scrollbar-bg: #d4e4f0; 
+  --scrollbar-bg: #d4e4f0;
   --scrollbar-thumb: #1847a0;
 }
 
 :root[data-theme="dark"] {
-  --font-family: 'Inter', sans-serif;
+  --font-family: "Inter", sans-serif;
   --text: #ecf5f8;
   --background: #030d11;
   --primary: #4994c5;
-  --secondary: #0b5a75;
+  --secondary: #1b2c6f;
   --accent: #0593c2;
   --outline: #4994c5;
-  --scrollbar-bg: #0a1926; 
-  --scrollbar-thumb: #4994c5; 
+  --scrollbar-bg: #0a1926;
+  --scrollbar-thumb: #4994c5;
 }
 
 body {
@@ -36,7 +36,8 @@ body {
   color: var(--text);
 }
 
-.chatDemonstrations, .linkedin-button {
+.chatDemonstrations,
+.linkedin-button {
   background-color: var(--primary);
   color: var(--text);
 }
@@ -47,7 +48,7 @@ body {
 }
 .botMessage {
   line-height: 1.8;
-  background-color: var(--background);
+  background-color: var(--secondary);
   color: var(--text);
 }
 
@@ -69,7 +70,8 @@ body {
   background-color: var(--accent);
 }
 
-.toggleButton, button{
+.toggleButton,
+button {
   background-color: var(--accent);
 }
 
