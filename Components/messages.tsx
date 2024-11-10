@@ -22,12 +22,14 @@ type MessagesProps = {
   messages: messageType[];
   setMessages: React.Dispatch<React.SetStateAction<messageType[]>>;
   isExample: boolean;
+  setIsExample: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const Messages: React.FC<MessagesProps> = ({
   messages,
   setMessages,
   isExample,
+  setIsExample,
 }) => {
   const chatbotMessagesRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState<string>("");
@@ -62,6 +64,7 @@ const Messages: React.FC<MessagesProps> = ({
       toggleMessageLoading();
       const userQuestion: messageType = { role: "user", content: prompt };
       setMessages((prevMessages) => [...prevMessages, userQuestion]);
+      setIsExample(false);
       setPrompt("");
       const endpoint = process.env.NEXT_PUBLIC_PROFILE_INSIGHT_AI_ENDPOINT;
       if (!endpoint) {

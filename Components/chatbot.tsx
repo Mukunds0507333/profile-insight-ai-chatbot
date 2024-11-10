@@ -106,6 +106,7 @@ const Chatbot: React.FC = () => {
             messages={messages}
             setMessages={setMessages}
             isExample={isExample}
+            setIsExample={setIsExample}
           />
         </Box>
       </Grid>
