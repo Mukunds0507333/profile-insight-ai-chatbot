@@ -18,6 +18,7 @@ const ChatList: React.FC<MessagesProps> = ({ setMessages, setIsExample }) => {
 
   const retrieveMessages = async (index: number) => {
     try {
+      setMessages([]);
       setSelectedDemo(index);
       setIsExample(true);
       toggleMessageLoading();
