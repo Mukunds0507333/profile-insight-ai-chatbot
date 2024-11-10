@@ -29,19 +29,33 @@ const Messages: React.FC<MessagesProps> = ({
   setMessages,
   isExample,
 }) => {
-  const chatbotMessagesRef = useRef<HTMLDivElement | null>(null);
+  const chatbotMessagesRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState<string>("");
   const { isLoading, toggleMessageLoading, theme } = useTheme();
 
   useEffect(() => {
-    console.log("useEffect ", messages);
     if (chatbotMessagesRef.current) {
-      chatbotMessagesRef.current.scrollTop =
-        chatbotMessagesRef.current.scrollHeight;
+      const container = chatbotMessagesRef.current;
+
+      const isAtBottom =
+        container.scrollHeight - container.scrollTop === container.clientHeight;
+
+      if (isAtBottom) {
+        container.scrollTop = container.scrollHeight;
+      } else {
+        const newMessageElement = container.lastElementChild as HTMLElement;
+        if (newMessageElement) {
+          const scrollOffset = newMessageElement.offsetHeight / 3;
+          container.scrollTop += scrollOffset;
+        }
+      }
     }
   }, [messages]);
 
   const handleSendMessage = async () => {
+    chatbotMessagesRef.current!.scrollTop =
+      chatbotMessagesRef.current!.scrollHeight;
+
     if (prompt?.length > 0) {
       toggleMessageLoading();
       const userQuestion: messageType = { role: "user", content: prompt };
@@ -63,6 +77,32 @@ const Messages: React.FC<MessagesProps> = ({
         console.error("Error fetching response:", error);
       }
     }
+  };
+
+  const parseLinks = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.split("\n").map((line, i) => {
+      const parts = line.split(urlRegex).map((part, idx) =>
+        urlRegex.test(part) ? (
+          <a
+            key={idx}
+            href={part}
+            style={{
+              color: theme === "dark" ? "#90caf9" : "#1976d2",
+              textDecoration: "underline",
+              transition: "color 0.3s ease",
+            }}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {part}
+          </a>
+        ) : (
+          part
+        )
+      );
+      return <div key={i}>{parts}</div>;
+    });
   };
 
   return (
@@ -141,13 +181,7 @@ const Messages: React.FC<MessagesProps> = ({
                     }}
                     elevation={10}
                   >
-                    {message?.content
-                      ?.split("\n")
-                      .map((line: string, i: number) => (
-                        <div key={i} style={{ margin: 5 }}>
-                          {line}
-                        </div>
-                      ))}
+                    {parseLinks(message?.content)}
                   </Paper>
                 );
               })}
@@ -183,6 +217,18 @@ const Messages: React.FC<MessagesProps> = ({
                 <a
                   href="https://github.com/Mukunds0507333/profile-insight-ai-chatbot"
                   target="_blank"
+                  style={{
+                    color: theme === "dark" ? "#90caf9" : "#1976d2",
+                    textDecoration: "underline",
+                    transition: "color 0.3s ease",
+                  }}
+                  onMouseEnter={(e) =>
+                    (e.currentTarget.style.color = "#64b5f6")
+                  }
+                  onMouseLeave={(e) =>
+                    (e.currentTarget.style.color =
+                      theme === "dark" ? "#90caf9" : "#1976d2")
+                  }
                 >
                   here
                 </a>
@@ -195,19 +241,26 @@ const Messages: React.FC<MessagesProps> = ({
         </Box>
       </Box>
       {messages && (
-        <Box style={{ flex: 2, display: "flex", width: "75%" }}>
+        <Box
+          style={{
+            flex: 2,
+            display: "flex",
+            width: "75%",
+            alignItems: "center",
+          }}
+        >
           <TextField
             label="Your message"
             variant="outlined"
             fullWidth
             margin="normal"
             value={prompt}
-            onChange={(e) => {
-              setPrompt(e.target.value);
-            }}
+            onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === "Enter") handleSendMessage();
             }}
+            multiline
+            maxRows={1}
             sx={{
               "& .MuiOutlinedInput-root": {
                 "& fieldset": {
@@ -227,32 +280,27 @@ const Messages: React.FC<MessagesProps> = ({
                 color: "var(--text)",
               },
             }}
-            InputProps={{
-              endAdornment: (
-                <Button
-                  style={{
-                    paddingLeft: 1,
-                    width: 1,
-                    marginLeft: -12,
-                    marginRight: 8,
-                  }}
-                  variant="contained"
-                  onClick={handleSendMessage}
-                  disabled={isLoading}
-                  endIcon={
-                    isLoading ? (
-                      <CircularProgress
-                        size={24}
-                        color={theme == "light" ? "inherit" : "secondary"}
-                      />
-                    ) : (
-                      <SendRoundedIcon />
-                    )
-                  }
-                />
-              ),
+            inputProps={{
+              style: {
+                overflow: "auto",
+              },
             }}
           />
+          <Button
+            style={{ marginLeft: "10px", height: "56px" }}
+            variant="contained"
+            onClick={handleSendMessage}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <CircularProgress
+                size={24}
+                color={theme === "light" ? "inherit" : "secondary"}
+              />
+            ) : (
+              <SendRoundedIcon />
+            )}
+          </Button>
         </Box>
       )}
     </>

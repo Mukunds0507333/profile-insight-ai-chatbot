@@ -24,7 +24,6 @@ const ChatList: React.FC<MessagesProps> = ({ setMessages, setIsExample }) => {
       const response = await axios.get(`/api/chats/${index + 1}`, {
         timeout: 30000,
       });
-      console.log("response ", response.data.messages);
       setMessages(response.data.messages);
       toggleMessageLoading();
     } catch (error) {
