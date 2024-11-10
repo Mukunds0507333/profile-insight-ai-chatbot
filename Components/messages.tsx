@@ -90,50 +90,67 @@ const Messages: React.FC<MessagesProps> = ({ messages, setMessages }) => {
               animation="pulse"
               height={2000}
               width={4000}
-              style={{ alignSelf: "flex-end" }}
+              style={{
+                alignSelf: "flex-end",
+                animationDuration: "0.75s", // Adjust this value to make it faster
+              }}
             />
           ) : messages?.length > 0 ? (
-            messages.map((message: messageType, index: number) => {
-              return message?.role == "user" ? (
-                <Paper
-                  key={index}
-                  className="userMessage"
-                  style={{
-                    padding: 20,
-                    alignSelf: "flex-end",
-                    marginTop: 7,
-                    marginBottom: 7,
-                  }}
-                  elevation={6}
-                >
-                  {message?.content
-                    ?.split("\n")
-                    .map((line: string, i: number) => (
-                      <div key={i}>{line}</div>
-                    ))}
-                </Paper>
-              ) : (
-                <Paper
-                  key={index}
-                  className="botMessage"
-                  style={{
-                    padding: 20,
+            <>
+              {messages.map((message: messageType, index: number) => {
+                return message?.role == "user" ? (
+                  <Paper
+                    key={index}
+                    className="userMessage"
+                    style={{
+                      padding: 20,
+                      alignSelf: "flex-end",
+                      marginTop: 7,
+                      marginBottom: 7,
+                    }}
+                    elevation={6}
+                  >
+                    {message?.content
+                      ?.split("\n")
+                      .map((line: string, i: number) => (
+                        <div key={i}>{line}</div>
+                      ))}
+                  </Paper>
+                ) : (
+                  <Paper
+                    key={index}
+                    className="botMessage"
+                    style={{
+                      padding: 20,
+                      alignSelf: "flex-start",
+                      marginTop: 7,
+                      marginBottom: 7,
+                    }}
+                    elevation={10}
+                  >
+                    {message?.content
+                      ?.split("\n")
+                      .map((line: string, i: number) => (
+                        <div key={i} style={{ margin: 5 }}>
+                          {line}
+                        </div>
+                      ))}
+                  </Paper>
+                );
+              })}
+              {isLoading && (
+                <Skeleton
+                  animation="pulse"
+                  height={200}
+                  width={400}
+                  sx={{
+                    // fontSize: "1rem",
                     alignSelf: "flex-start",
-                    marginTop: 7,
-                    marginBottom: 7,
+                    animationDuration: "0.5s", // Adjust this value to make it faster
                   }}
-                  elevation={10}
-                >
-                  {message?.content
-                    ?.split("\n")
-                    .map((line: string, i: number) => (
-                      <div key={i} style={{ margin: 5 }}>
-                        {line}
-                      </div>
-                    ))}
-                </Paper>
-              );
-            })
+                />
+              )}
+            </>
           ) : (
             <>
               <Typography style={{ textAlign: "center" }} variant="body2">
