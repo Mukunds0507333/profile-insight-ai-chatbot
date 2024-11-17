@@ -164,10 +164,7 @@ const Messages: React.FC<MessagesProps> = ({
             width: "90%",
           }}
         >
-          {isLoading &&
-          progress != 0 &&
-          ((!isExample && messages?.length == 1) ||
-            (isExample && messages?.length == 0)) ? (
+          {isLoading && progress != 0 && !isExample && messages?.length == 1 ? (
             <div
               style={{
                 display: "flex",
@@ -194,7 +191,7 @@ const Messages: React.FC<MessagesProps> = ({
                 setting up a containerized environment to process your request.
               </p>
             </div>
-          ) : messages?.length > 0 ? (
+          ) : messages?.length > 0 || isExample ? (
             <>
               {messages.map((message: messageType, index: number) => {
                 return message?.role == "user" ? (
