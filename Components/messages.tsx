@@ -149,9 +149,8 @@ const Messages: React.FC<MessagesProps> = ({
           justifyContent: "center",
           alignItems: "center",
           width: "80%",
+          overflow: "auto",
           overflowY: "scroll",
-          overflow: messages.length > 0 ? "auto" : "hidden",
-          minHeight: "100vh",
         }}
         className="chat-messages"
       >
@@ -164,7 +163,7 @@ const Messages: React.FC<MessagesProps> = ({
             width: "90%",
           }}
         >
-          {isLoading && progress != 0 && messages?.length == 1 ? (
+          {isLoading && progress != 0 && messages?.length <= 1 ? (
             <div
               style={{
                 display: "flex",
