@@ -43,7 +43,7 @@ const Chatbot: React.FC = () => {
   }, [showChatList]);
 
   return (
-    <Grid container className="chatbot" style={{ height: "100%", margin: 0 }}>
+    <Grid container className="chatbot" style={{ height: "100vh", margin: 0 }}>
       <Box
         sx={{
           display: { xs: "block", md: "none" },

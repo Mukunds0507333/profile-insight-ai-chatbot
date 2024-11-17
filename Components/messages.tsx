@@ -92,6 +92,7 @@ const Messages: React.FC<MessagesProps> = ({
           message_list: [...messages, userQuestion],
         });
         const reply: messageType = { role: "AI", content: response.data };
+
         setMessages((prevMessages) => [...prevMessages, reply]);
         toggleMessageLoading();
       } catch (error) {
@@ -163,7 +164,10 @@ const Messages: React.FC<MessagesProps> = ({
             width: "90%",
           }}
         >
-          {isLoading && progress != 0 && messages?.length <= 1 ? (
+          {isLoading &&
+          progress != 0 &&
+          ((!isExample && messages?.length == 1) ||
+            (isExample && messages?.length == 0)) ? (
             <div
               style={{
                 display: "flex",
