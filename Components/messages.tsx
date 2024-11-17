@@ -34,6 +34,22 @@ const Messages: React.FC<MessagesProps> = ({
   const chatbotMessagesRef = useRef<HTMLDivElement>(null);
   const [prompt, setPrompt] = useState<string>("");
   const { isLoading, toggleMessageLoading, theme } = useTheme();
+  const [progress, setProgress] = useState(18);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setProgress((prev) => {
+        if (prev > 0) {
+          return prev - 1;
+        } else {
+          clearInterval(timer);
+          return 0;
+        }
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isLoading]);
 
   useEffect(() => {
     if (chatbotMessagesRef.current) {
@@ -147,24 +163,33 @@ const Messages: React.FC<MessagesProps> = ({
             width: "90%",
           }}
         >
-          {isLoading && isExample && messages?.length == 0 ? (
-            <Skeleton
-              animation="pulse"
-              height={200}
-              width={400}
-              sx={{
-                backgroundColor:
-                  theme === "dark" ? "var(--secondary)" : "rgba(0, 0, 0, 0.11)",
-                "&::after": {
-                  background:
-                    theme === "dark"
-                      ? "var(--scrollbar-thumb)"
-                      : "rgba(0, 0, 0, 0.25)",
-                },
-                alignSelf: "flex-center",
-                animationDuration: "0.5s",
+          {isLoading && progress != 0 && !isExample && messages?.length == 1 ? (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
-            />
+            >
+              <CircularProgress
+                variant="determinate"
+                value={100 - (progress / 18) * 100}
+              ></CircularProgress>
+              <p
+                style={{
+                  marginTop: "1rem",
+                  textAlign: "center",
+                  color:
+                    theme === "dark"
+                      ? "var(--text-secondary)"
+                      : "rgba(0, 0, 0, 0.6)",
+                  fontStyle: "italic",
+                }}
+              >
+                The system is initializing due to a cold start. AWS Lambda is
+                setting up a containerized environment to process your request.
+              </p>
+            </div>
           ) : messages?.length > 0 ? (
             <>
               {messages.map((message: messageType, index: number) => {
@@ -173,10 +198,12 @@ const Messages: React.FC<MessagesProps> = ({
                     key={index}
                     className="userMessage"
                     style={{
+                      // width: "80%",
                       padding: 20,
                       alignSelf: "flex-end",
                       marginTop: 10,
                       marginBottom: 10,
+                      wordWrap: "break-word",
                     }}
                     elevation={6}
                   >
@@ -191,10 +218,12 @@ const Messages: React.FC<MessagesProps> = ({
                     key={index}
                     className="botMessage"
                     style={{
+                      width: "80%",
                       padding: 20,
                       alignSelf: "flex-start",
                       marginTop: 10,
                       marginBottom: 10,
+                      wordWrap: "break-word",
                     }}
                     elevation={10}
                   >
@@ -271,6 +300,7 @@ const Messages: React.FC<MessagesProps> = ({
             variant="outlined"
             fullWidth
             margin="normal"
+            disabled={isLoading}
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             onKeyDown={(e) => {
